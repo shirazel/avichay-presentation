@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>היכרות עם קלוד</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap">
+<style>
+:root{color-scheme:light}
+:root{
+  --paper:#faf7ff; --card:#ffffff; --ink:#1f1533; --muted:#6b5d85; --faint:#a79bc2;
+  --line:#e7dff5; --show:#7c3aed; --show-bg:#f1e9fe; --do:#ff5c8a; --do-bg:#ffe7ef; --on-do:#ffffff;
+  --warn:#c2591c; --warn-bg:#fdecd9;
+  --shadow:0 2px 4px rgba(31,21,51,.06),0 18px 46px -22px rgba(31,21,51,.32);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#150f24; --card:#201735; --ink:#f1eafb; --muted:#b8a9d9; --faint:#7c6b9c;
+    --line:#33254d; --show:#b79cff; --show-bg:#2a2050; --do:#ff8fb0; --do-bg:#3a2030; --on-do:#150f24;
+    --warn:#f0a868; --warn-bg:#3a2a18;
+    --shadow:0 2px 4px rgba(0,0,0,.35),0 18px 46px -22px rgba(0,0,0,.85);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#150f24; --card:#201735; --ink:#f1eafb; --muted:#b8a9d9; --faint:#7c6b9c;
+  --line:#33254d; --show:#b79cff; --show-bg:#2a2050; --do:#ff8fb0; --do-bg:#3a2030; --on-do:#150f24;
+  --warn:#f0a868; --warn-bg:#3a2a18;
+  --shadow:0 2px 4px rgba(0,0,0,.35),0 18px 46px -22px rgba(0,0,0,.85);
+}
+*{box-sizing:border-box}
+body{
+  direction:rtl; margin:0; color:var(--ink);
+  background:
+    radial-gradient(1100px 560px at 12% -8%, color-mix(in srgb, var(--show) 15%, transparent), transparent 60%),
+    radial-gradient(900px 520px at 108% 105%, color-mix(in srgb, var(--do) 14%, transparent), transparent 58%),
+    var(--paper);
+  font-family:"Assistant",-apple-system,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased; overflow:hidden;
+}
+.deck{height:100vh;display:flex;flex-direction:column}
+.stage{flex:1;min-height:0;overflow-y:auto;padding:36px 30px;display:flex;flex-direction:column;justify-content:center}
+.slide{display:none;width:100%;max-width:1020px;margin:0 auto;flex-direction:column;gap:20px}
+.slide.on{display:flex;animation:in .3s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.slide.on{animation:none}}
+.term{
+  direction:ltr;text-align:left;font-family:"Poppins",system-ui,sans-serif;
+  font-weight:600;font-size:clamp(15px,2vh,20px);letter-spacing:.12em;
+  color:var(--show);text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.term::before{content:"";width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--show),var(--do));flex:0 0 auto}
+.eyebrow{font-size:clamp(12px,1.5vh,15px);letter-spacing:.16em;font-weight:700;color:var(--muted)}
+h1{font-family:"Assistant",-apple-system,sans-serif;font-weight:600;font-size:clamp(34px,7.4vh,74px);line-height:1.1;letter-spacing:-.015em;margin:0 0 8px;text-wrap:balance;position:relative;display:inline-block}
+h1::after{content:"";display:block;width:84px;height:6px;margin-top:16px;border-radius:3px;background:linear-gradient(90deg,var(--show),var(--do))}
+.center h1::after{margin-inline:auto}
+h2{font-family:"Assistant",-apple-system,sans-serif;font-weight:600;font-size:clamp(29px,5.6vh,54px);line-height:1.15;letter-spacing:-.012em;margin:0 0 6px;text-wrap:balance;position:relative;display:inline-block}
+h2::after{content:"";display:block;width:64px;height:5px;margin-top:12px;border-radius:3px;background:linear-gradient(90deg,var(--show),var(--do))}
+.center h2::after{margin-inline:auto}
+.big{font-size:clamp(19px,2.9vh,30px);line-height:1.48;color:var(--muted);margin:0;max-width:38ch}
+.lede{font-size:clamp(17px,2.4vh,23px);line-height:1.55;margin:0;color:var(--muted);max-width:52ch}
+.why{display:flex;flex-direction:column;gap:9px;font-size:clamp(16px,2.2vh,21px);line-height:1.5}
+.why div{display:flex;gap:11px;align-items:baseline}
+.why .k{
+  flex:0 0 auto;font-family:"Poppins",system-ui,sans-serif;direction:ltr;
+  font-size:.75em;font-weight:600;color:var(--do);background:var(--do-bg);
+  border-radius:999px;padding:2px 10px;letter-spacing:.03em;
+}
+.faces{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px}
+.face{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;transition:transform .18s,box-shadow .18s}
+.face:hover{transform:translateY(-3px);box-shadow:0 6px 10px rgba(31,21,51,.1),0 22px 50px -20px rgba(31,21,51,.4)}
+.face.live{border-block-start:3px solid var(--do)}
+.face.edge{border-block-start:3px solid var(--line)}
+.face h3{margin:0;font-family:"Poppins",system-ui,sans-serif;direction:ltr;text-align:left;font-size:clamp(19px,2.7vh,26px);font-weight:600}
+.face p{margin:0;font-size:clamp(14px,1.9vh,17px);color:var(--muted);line-height:1.48}
+.face .mark{font-size:11.5px;letter-spacing:.11em;font-weight:700;color:var(--do)}
+.face.edge .mark{color:var(--faint)}
+.face.he h3{direction:rtl;text-align:right;font-family:"Assistant",sans-serif}
+.face p a{color:var(--do);font-weight:600;text-decoration:none;border-bottom:1px solid var(--do);white-space:nowrap}
+.face p a:hover{opacity:.8}
+.promptbox{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.pb-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 16px;border-bottom:1px solid var(--line);background:var(--show-bg)}
+.pb-top span{font-size:12.5px;font-weight:700;letter-spacing:.09em;color:var(--show)}
+.pb-body{padding:16px 20px;font-size:clamp(14px,1.9vh,20px);line-height:1.62;white-space:pre-line;max-height:42vh;overflow-y:auto}
+button{font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:7px 14px;transition:background .15s,border-color .15s,transform .15s}
+button:hover{border-color:var(--show);transform:translateY(-1px)}
+button:active{transform:translateY(0)}
+.nextbtn{background:linear-gradient(135deg,var(--show),var(--do));color:#fff;border-color:transparent}
+.nextbtn:hover{opacity:.92}
+button:focus-visible{outline:2px solid var(--show);outline-offset:2px}
+.copy.done{background:var(--do-bg);color:var(--do);border-color:var(--do)}
+ul,ol{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:8px;font-size:clamp(15px,2.1vh,20px);line-height:1.5}
+li::marker{color:var(--do)}
+.note{font-size:clamp(14px,1.9vh,18px);color:var(--warn);display:flex;gap:9px;align-items:baseline;background:var(--warn-bg);border-radius:10px;padding:10px 14px}
+.note b{flex:0 0 auto;font-weight:700}
+.center{align-items:center;text-align:center}
+.cover-slide{align-items:center;text-align:center;justify-content:center}
+.cover-card{
+  align-items:center;text-align:center;justify-content:center;gap:22px;
+  display:flex;flex-direction:column;width:100%;
+  background:radial-gradient(900px 500px at 15% 10%, rgba(255,255,255,.14), transparent 60%),
+             linear-gradient(135deg,#6d28d9 0%,#ff5c8a 100%);
+  border-radius:28px;padding:70px 50px;position:relative;overflow:hidden;
+  min-height:min(56vh,520px);
+  box-shadow:0 2px 4px rgba(0,0,0,.15),0 30px 70px -24px rgba(30,10,40,.55);
+}
+.cover-card::before,.cover-card::after{
+  content:"";position:absolute;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%);
+}
+.cover-card::before{width:420px;height:420px;inset-inline-end:-140px;inset-block-start:-160px}
+.cover-card::after{width:320px;height:320px;inset-inline-start:-110px;inset-block-end:-130px;
+  background:radial-gradient(circle,rgba(255,255,255,.13),transparent 70%)}
+.cover-card>*{position:relative;z-index:1}
+.cover-card .eyebrow{
+  color:#fff5fa;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.26);
+  border-radius:999px;padding:6px 16px;letter-spacing:.14em;
+}
+.cover-card h1{color:#fff}
+.cover-card h1::after{background:linear-gradient(90deg,#ffe1ec,#e6d8ff)}
+.cover-card .big{color:rgba(255,255,255,.9)}
+.cover-sig{margin-top:6px;display:flex;flex-direction:column;gap:6px;align-items:center}
+.cover-sig-name{font-size:14px;font-weight:400;color:var(--muted)}
+.cover-sig-links{font-size:13px;color:var(--faint)}
+.cover-sig-links a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--faint);padding-bottom:1px;font-weight:400}
+.cover-sig-links a:hover{opacity:.75;color:var(--ink)}
+.cover-sig-links .sep{margin:0 8px;opacity:.5;color:var(--faint)}
+@media (max-width:620px){
+  .cover-sig-links .sep{display:none}
+  .cover-sig-links a{display:block;margin:3px 0}
+}
+.center .big{max-width:34ch}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:clamp(14px,2vh,19px)}
+th,td{text-align:right;padding:8px 12px;border-bottom:1px solid var(--line)}
+th{font-size:12.5px;letter-spacing:.07em;color:var(--muted);font-weight:700}
+td.en{direction:ltr;text-align:left;font-family:"Poppins",system-ui,sans-serif;font-weight:600;color:var(--show);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+.resgrid{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
+.resgroup{flex:0 1 320px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 18px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;transition:transform .18s,box-shadow .18s}
+.resgroup:hover{transform:translateY(-3px);box-shadow:0 6px 10px rgba(31,21,51,.1),0 22px 50px -20px rgba(31,21,51,.4)}
+.resgroup h3{margin:0;font-family:"Poppins",system-ui,sans-serif;direction:ltr;text-align:left;font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--show)}
+.resgroup a{display:block;color:var(--ink);text-decoration:none;font-size:clamp(14px,1.85vh,17px);line-height:1.4;border-bottom:1px solid transparent;padding-bottom:1px}
+.resgroup a:hover,.resgroup a:focus-visible{border-bottom-color:var(--do);color:var(--do)}
+.linkbtn{display:inline-block;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;background:var(--do-bg);color:var(--do);border:1px solid var(--do);border-radius:8px;padding:7px 15px;text-decoration:none;margin-top:10px;transition:opacity .15s;align-self:flex-start}
+.linkbtn:hover{opacity:.85}
+.embedwrap{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;height:min(62vh,600px)}
+.embed{width:100%;height:100%;border:0;display:block}
+.lesson-grid{display:grid;grid-template-columns:1.8fr 1fr;gap:16px;align-items:start}
+@media (max-width:760px){.lesson-grid{grid-template-columns:1fr}}
+.lesson-grid .embedwrap{height:min(50vh,420px)}
+.lesson-video{display:block;position:relative;width:100%;height:100%;background:linear-gradient(135deg,#241a3d,#3a2058)}
+.lesson-video .playbtn{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  color:#fff;text-decoration:none;background:transparent;
+}
+.lesson-video .circle{
+  width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+  display:flex;align-items:center;justify-content:center;transition:transform .18s,background .18s;
+}
+.lesson-video .circle::after{content:"";display:block;border-style:solid;border-width:11px 0 11px 18px;border-color:transparent transparent transparent #fff;margin-inline-start:4px}
+.lesson-video .playbtn:hover .circle{transform:scale(1.08);background:rgba(255,255,255,.26)}
+.lesson-video .vt{font-size:clamp(15px,2vh,19px);font-weight:600}
+.lesson-video .vs{font-size:13px;color:rgba(255,255,255,.75)}
+.notebook-card{
+  display:flex;flex-direction:column;justify-content:center;gap:9px;min-height:120px;
+  background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow);
+  text-decoration:none;color:var(--ink);transition:transform .18s,box-shadow .18s;
+}
+.notebook-card:hover{transform:translateY(-3px);box-shadow:0 6px 10px rgba(31,21,51,.1),0 22px 50px -20px rgba(31,21,51,.4)}
+.notebook-card .nb-mark{font-size:11.5px;letter-spacing:.11em;font-weight:700;color:var(--do)}
+.notebook-card .nb-title{font-size:clamp(18px,2.4vh,23px);font-weight:700}
+.notebook-card .nb-sub{font-size:clamp(13px,1.75vh,15px);color:var(--muted);line-height:1.45}
+.flow{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 4px}
+.flow .step{display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 14px;min-width:150px;box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s}
+.flow .step:hover{transform:translateY(-3px);box-shadow:0 6px 10px rgba(31,21,51,.1),0 22px 50px -20px rgba(31,21,51,.4)}
+.flow .step .num{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:"Poppins",system-ui,sans-serif;font-weight:700;font-size:14px;background:var(--show-bg);color:var(--show)}
+.flow .step span{font-size:13px;font-weight:600;color:var(--muted);text-align:center;line-height:1.35;max-width:16ch}
+.flow .step.accent{border-color:var(--do);background:var(--do-bg)}
+.flow .step.accent .num{background:var(--do);color:var(--on-do)}
+.flow .step.accent span{color:var(--do)}
+.flow .arrow{font-size:20px;color:var(--faint);flex:0 0 auto}
+#back{background:var(--do-bg);color:var(--do);border-color:var(--do);font-size:12.5px;padding:4px 9px}
+#back[hidden]{display:none}
+.menupop{
+  position:absolute;inset-block-end:calc(100% + 8px);inset-inline-start:14px;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  box-shadow:var(--shadow);padding:6px;z-index:20;
+  max-height:60vh;overflow-y:auto;min-width:260px;
+  display:flex;flex-direction:column;gap:2px;
+}
+.menupop[hidden]{display:none}
+.menupop button{text-align:start;border:none;background:transparent;border-radius:8px;padding:7px 10px;font-size:14px;font-weight:400;line-height:1.35;color:var(--ink)}
+.menupop button:hover{background:var(--show-bg)}
+.menupop button .n{display:inline-block;min-width:22px;font-variant-numeric:tabular-nums;color:var(--faint);font-weight:600;font-size:12.5px}
+.menupop button.cur{background:var(--do-bg);font-weight:700}
+.menupop button.cur .n{color:var(--do)}
+.bar{display:flex;align-items:center;gap:10px;padding:9px 18px;border-top:1px solid var(--line);background:var(--card);flex-wrap:wrap;position:relative}
+.count{font-size:12.5px;font-weight:700;color:var(--do);background:var(--do-bg);border-radius:999px;padding:4px 11px;font-variant-numeric:tabular-nums}
+.hint{font-size:13px;color:var(--faint)}
+.spacer{flex:1}
+.progress{position:absolute;inset-block-start:0;inset-inline-start:0;height:3px;background:linear-gradient(90deg,var(--show),var(--do));transition:width .3s}
+.minisig{font-size:11px;color:var(--faint);opacity:.85}
+.minisig a{color:inherit;text-decoration:none;border-bottom:1px solid currentColor}
+.minisig a:hover{opacity:.75}
+.sig{direction:rtl;text-align:center;font-size:12px;line-height:1.85;opacity:.75;color:var(--muted);padding-top:16px;border-top:1px solid var(--line)}
+.sig a{color:inherit;text-decoration:none;border-bottom:1px solid currentColor}
+.sig .sep{margin:0 6px;opacity:.5}
+.toc-list{display:flex;flex-direction:column;gap:12px}
+.toc-item{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px;box-shadow:var(--shadow);cursor:pointer;text-align:right;font-family:inherit;width:100%;transition:transform .18s,box-shadow .18s}
+.toc-item:hover{transform:translateY(-2px);box-shadow:0 6px 10px rgba(31,21,51,.1),0 22px 50px -20px rgba(31,21,51,.4)}
+.toc-num{font-family:"Poppins",system-ui,sans-serif;font-weight:700;font-size:22px;color:var(--show);flex:0 0 auto;min-width:34px}
+.toc-text{display:flex;flex-direction:column;gap:2px}
+.toc-title{font-size:clamp(17px,2.3vh,21px);font-weight:700;color:var(--ink)}
+.toc-sub{font-size:clamp(13px,1.8vh,15px);color:var(--muted)}
+.divider{gap:14px}
+.divider-num{font-family:"Poppins",system-ui,sans-serif;font-size:clamp(50px,9vh,110px);font-weight:700;color:var(--show);opacity:.16;line-height:1;margin-bottom:-8px}
+@media (max-width:620px){
+  .stage{padding:22px 16px}
+  .hint,.minisig{display:none}
+  .sig .sep{display:none}
+  .sig a{display:block;margin:3px 0}
+}
+.formcard{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:20px 22px;display:flex;flex-direction:column;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:clamp(14px,1.9vh,17px);font-weight:600;color:var(--ink)}
+.field label .opt{font-weight:400;color:var(--faint);font-size:.85em}
+.field input,.field textarea{
+  font-family:inherit;font-size:clamp(14px,1.9vh,17px);color:var(--ink);
+  background:var(--paper);border:1px solid var(--line);border-radius:10px;
+  padding:10px 14px;resize:vertical;line-height:1.5;
+}
+.field input:focus,.field textarea:focus{outline:2px solid var(--show);outline-offset:1px;border-color:var(--show)}
+.field textarea{min-height:64px}
+.formbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.savebtn{background:linear-gradient(135deg,var(--show),var(--do));color:#fff;border-color:transparent;align-self:flex-start;padding:9px 20px}
+.savebtn:hover{opacity:.92}
+.savebtn:disabled{opacity:.6;cursor:wait}
+.form-status{font-size:14px;font-weight:600;min-height:20px}
+.form-status.ok{color:var(--show)}
+.form-status.err{color:var(--warn)}
+</style>
+</head>
+<body>
+
+<div class="deck">
+<div class="stage">
+  <!-- 1 -->
+  <section class="slide cover-slide on" data-hint="פתיחה">
+    <div class="cover-card">
+      <div class="eyebrow">בינה מלאכותית מעשית</div>
+      <h1>קלוד</h1>
+      <p class="big">עוזר חכם שמדבר בשפה שלכם, כותב, בונה ומנתח, ולומד להכיר אתכם עם הזמן.</p>
+    </div>
+    <div class="cover-sig">
+      <span class="cover-sig-name">שירה רוט זליקוביץ · הוראה יצירתית עם AI</span>
+      <span class="cover-sig-links">
+        <a href="https://wa.me/972523930628" target="_blank" rel="noopener">ווטסאפ</a>
+        <span class="sep">·</span>
+        <a href="https://www.lomdot.org/" target="_blank" rel="noopener">האתר שלי</a>
+        <span class="sep">·</span>
+        <a href="https://www.lomdot.org/" target="_blank" rel="noopener">להזמנת סדנאות בינה מלאכותית</a>
+      </span>
+    </div>
+  </section>
+  <!-- toc -->
+  <section class="slide" data-hint="תוכן העניינים">
+    <div class="term">Contents</div>
+    <h2>תוכן העניינים</h2>
+    <p class="lede">הקורס בנוי ממפגשים, כל אחד עם השקפים שלו.</p>
+    <div class="toc-list">
+      <button class="toc-item" type="button" data-target="lesson1-divider">
+        <span class="toc-num">01</span>
+        <span class="toc-text">
+          <span class="toc-title">שיעור 1</span>
+          <span class="toc-sub">היכרות עם קלוד, איך הוא עובד ומה הוא יודע לעשות</span>
+        </span>
+      </button>
+      <button class="toc-item" type="button" data-target="lesson2-divider">
+        <span class="toc-num">02</span>
+        <span class="toc-text">
+          <span class="toc-title">שיעור 2</span>
+          <span class="toc-sub">סקילים, פיתוח כלי אמיתי, ואפיון אתר עם קלוד</span>
+        </span>
+      </button>
+      <button class="toc-item" type="button" data-target="lesson3-divider">
+        <span class="toc-num">03</span>
+        <span class="toc-text">
+          <span class="toc-title">שיעור 3</span>
+          <span class="toc-sub">אפיון אתר ל"בית לאה", דף נחיתה, Google Sheets וסליקה</span>
+        </span>
+      </button>
+    </div>
+    <a class="notebook-card" href="https://notebook.google.com/notebook/71931c1a-ad9d-40bd-b4ec-9f67eb5b251f" target="_blank" rel="noopener">
+      <span class="nb-mark">Gemini Notebook</span>
+      <span class="nb-title">נוטבוק הקורס</span>
+      <span class="nb-sub">כל מקורות הקורס והסיכומים מכל השיעורים, במקום אחד, פתוח לשאלות ↗</span>
+    </a>
+  </section>
+  <!-- lesson 1 divider -->
+  <section class="slide center divider" id="lesson1-divider" data-hint="שיעור 1">
+    <div class="divider-num">01</div>
+    <div class="term">Lesson</div>
+    <h1>שיעור 1</h1>
+    <p class="lede">היכרות עם קלוד, איך הוא עובד ומה הוא יודע לעשות</p>
+  </section>
+  <!-- 1b -->
+  <section class="slide" data-hint="הקלטת השיעור">
+    <div class="term">Recording</div>
+    <h2>הקלטת השיעור</h2>
+    <p class="lede">צפייה חוזרת בשיעור.</p>
+    <div class="embedwrap">
+      <iframe class="embed" src="https://www.youtube.com/embed/JGuhS8Q9PPU" title="הקלטת השיעור" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </section>
+  <!-- 2 -->
+  <section class="slide" data-hint="מה זה קלוד">
+    <div class="term">About</div>
+    <h2>מה זה בעצם קלוד</h2>
+    <p class="lede">קלוד הוא עוזר בינה מלאכותית שכותבים לו בשפה רגילה, בעברית או באנגלית, והוא עונה, כותב, בונה כלים ומנתח מידע. לא צריך ידע בתכנות. ההוראה שאתם כותבים היא כל מה שהוא צריך כדי להתחיל.</p>
+    <div class="why">
+      <div><span class="k">כתיבה</span><span>ניסוח, עריכה והתאמת טון לכל קהל</span></div>
+      <div><span class="k">בנייה</span><span>עמודים, טפסים וכלים קטנים ממשפט אחד בעברית</span></div>
+      <div><span class="k">ניתוח</span><span>קריאה בקובץ ותשובה על שאלות לגביו</span></div>
+      <div><span class="k">שיחה</span><span>זוכר הקשר תוך כדי שיחה, וממשיך אותה בפעם הבאה</span></div>
+    </div>
+    <a class="linkbtn" href="https://claude.ai/code/artifact/ded00a73-a170-4a94-b33d-cf552ab387cf" target="_blank" rel="noopener">מדריך חי לכל התפריט של קלוד ↗</a>
+  </section>
+  <!-- 3 -->
+  <section class="slide" data-hint="מה קלוד יודע לעשות">
+    <div class="term">Capabilities</div>
+    <h2>מה קלוד יודע לעשות</h2>
+    <p class="lede">לא כלי אחד למשימה אחת. הנה כמה מהדברים שעשיתי בעצמי עם קלוד, כדוגמה לכל תחום.</p>
+    <div class="faces">
+      <div class="face he"><h3>כתיבה ועריכה</h3><p>עריכת חומרי הדרכה למורים, כדי שיהיו ברורים גם למי שלא טכני</p></div>
+      <div class="face he"><h3>מחקר ומידע</h3><p>בדיקה של תוצאות סקר מול 31 קבצי אקסל, ואיתור אי-התאמות בציונים</p></div>
+      <div class="face he"><h3>ניתוח קבצים ונתונים</h3><p>אתר לניהול הערכות תהליכי השתלמות, עם העלאת קבצים ושיתוף דוחות <a href="https://shirazel.github.io/pisga-evaluations/" target="_blank" rel="noopener">פתיחה ↗</a></p></div>
+      <div class="face he"><h3>בנייה ואוטומציה</h3><p>מדריך לשליחת מייל אוטומטי מתוך תשובות טופס, בלי לדעת לתכנת <a href="https://shirazel.github.io/Automated-Email---Guide/" target="_blank" rel="noopener">פתיחה ↗</a></p></div>
+      <div class="face he"><h3>תכנון וארגון</h3><p>לוח גאנט חי ואינטראקטיבי, במקום טבלה יבשה <a href="https://shirazel.github.io/haemek-gant/" target="_blank" rel="noopener">פתיחה ↗</a></p></div>
+      <div class="face he"><h3>בדיקה ומשוב</h3><p>בדיקת עבודות מול מחוון, ומשוב אישי וברור לכל משתלם</p></div>
+    </div>
+  </section>
+  <!-- 4 -->
+  <section class="slide" data-hint="סביבת העבודה">
+    <div class="term">Ecosystem</div>
+    <h2>כמה דרכים לעבוד עם קלוד</h2>
+    <div class="faces">
+      <div class="face live"><span class="mark">היום</span><h3>Chat</h3><p><b>לשיחות מהירות.</b> פתרון התלבטויות, ניסוחים, ושאלות על מסמך. מגיע למה שהעליתם ולמה שחיברתם, דרייב, ג'ימייל, יומן. לא לקבצים שבמחשב.</p></div>
+      <div class="face live"><span class="mark">היום</span><h3>Cowork</h3><p><b>עבודה על הקבצים שבמחשב.</b> משימות ארוכות ומרובות שלבים על התיקיות שלכם, בלי להעלות כלום, לצידכם ובאישורכם.</p></div>
+      <div class="face live"><span class="mark">היום</span><h3>Claude in Chrome</h3><p><b>קלוד בתוך הדפדפן.</b> תוסף שרואה את הטאב הפתוח אצלכם ופועל בו ישירות, בלי להעתיק טקסט הלוך ושוב.</p></div>
+      <div class="face edge"><span class="mark">בהמשך</span><h3>Claude Design</h3><p><b>עיצוב ממשקים.</b> קנבס ליצירת דשבורדים, תרשימים ונכסים חזותיים. בדפדפן ובדסקטופ, לא במובייל.</p></div>
+      <div class="face edge"><span class="mark">בהמשך</span><h3>Claude Code</h3><p><b>בניית כלים.</b> עריכת קבצים, ניתוח נתונים ופיתוח כלים פנימיים. עובד בשורת פקודה, וזה מה שדורש הכי הרבה למידה, לא הקוד עצמו.</p></div>
+    </div>
+  </section>
+  <!-- 4b -->
+  <section class="slide" data-hint="עוד יכולות">
+    <div class="term">More</div>
+    <h2>עוד כמה יכולות שכדאי להכיר</h2>
+    <p class="lede">מעבר לשיחה הרגילה, יש לקלוד כמה כלים שמרחיבים מה שאפשר לעשות איתו.</p>
+    <div class="why">
+      <div><span class="k">Connectors</span><span>חיבור ישיר לגוגל דרייב, ג'ימייל, יומן, סלאק ועוד, כדי שקלוד יקרא ויכתוב שם במקום שתעתיקו</span></div>
+      <div><span class="k">Voice</span><span>מצב קולי, לשיחה בדיבור במקום בהקלדה</span></div>
+      <div><span class="k">Models</span><span>בחירת מודל, מהיר לתשובה מיידית או חזק יותר למשימה מורכבת</span></div>
+      <div><span class="k">Plugins</span><span>חבילה מוכנה של כמה יכולות יחד, במקום להרכיב כל אחת בנפרד</span></div>
+    </div>
+  </section>
+  <!-- 4c -->
+  <section class="slide" data-hint="תפריט ההגדרות">
+    <div class="term">Settings</div>
+    <h2>תפריט ההגדרות של קלוד</h2>
+    <p class="lede">כל מה שמתאים את קלוד אליכם נמצא בתפריט ההגדרות, מחולק לשלושה חלקים.</p>
+    <div class="why">
+      <div><span class="k">Settings</span><span>החשבון והיכולות של קלוד עצמו, חיפוש, ניתוח קבצים, יצירת תוצרים</span></div>
+      <div><span class="k">Desktop app</span><span>הגדרות של האפליקציה במחשב</span></div>
+      <div><span class="k">Customize</span><span>מה שמתאים את קלוד אליכם, מיומנויות, חיבורים וזיכרון</span></div>
+    </div>
+    <div class="promptbox">
+      <div class="pb-top"><span>מדריך חי</span></div>
+      <div class="pb-body" style="white-space:normal">16 מסכי הגדרות, כל אחד עם הסבר קצר, דוגמאות ולפעמים גם טיפ שימושי. לוחצים על כל שורה בתפריט וההסבר נפתח בצד.
+<a class="linkbtn" href="https://claude.ai/code/artifact/ded00a73-a170-4a94-b33d-cf552ab387cf" target="_blank" rel="noopener">פתיחת המדריך האינטראקטיבי ↗</a></div>
+    </div>
+  </section>
+  <!-- 5 -->
+  <section class="slide" data-hint="פרומפט">
+    <div class="term">Prompt</div>
+    <h2>פרומפט, ההוראה שאתם כותבים</h2>
+    <p class="lede">ההבדל בין תוצאה גנרית לתוצאה שאפשר לשלוח הלאה הוא לא הכלי. הוא חמש השורות שכתבתם.</p>
+    <div class="why">
+      <div><span class="k">Context</span><span>מי כותב, לאיזה ארגון, ולמי</span></div>
+      <div><span class="k">Audience</span><span>מה הנמען כבר יודע עלינו</span></div>
+      <div><span class="k">Length &amp; Tone</span><span>מספר מילים, ושתי מילים על הטון</span></div>
+      <div><span class="k">Structure</span><span>מה בכל פסקה</span></div>
+      <div><span class="k">Constraints</span><span>מה לא לעשות, וזה החלק שהכי חסר</span></div>
+    </div>
+    <div class="promptbox">
+      <div class="pb-top"><span>דוגמה</span><button class="copy">העתקה</button></div>
+      <div class="pb-body">אני עובד/ת ב[תפקיד] ב[הצוות שלי].
+כתוב [סוג הטקסט] עבור [למי, ומה הוא כבר יודע עלינו].
+אורך: [מספר מילים]. טון: [שתי מילים].
+מבנה: [מה בכל פסקה].
+אל תעשה: [שתיים־שלוש מילים או הרגלים שאני שונא/ת].</div>
+    </div>
+  </section>
+  <!-- 6 -->
+  <section class="slide" data-hint="פרויקט">
+    <div class="term">Project</div>
+    <h2>פרויקט, מרחב שמכיר אתכם</h2>
+    <p class="lede">תיקייה עם חומרי רקע קבועים והוראות קבועות. מפסיקים להסביר מחדש בכל שיחה מי אתם.</p>
+    <div class="why">
+      <div><span class="k">Knowledge</span><span>מסמכים שנשארים שם, מה שיצא טוב בעבר, פרופיל הארגון, השפה שלכם</span></div>
+      <div><span class="k">Instructions</span><span>הוראות קבועות, טון, מבנה, מה לא אומרים לעולם</span></div>
+      <div><span class="k">Shared</span><span>אפשר לשתף עם הצוות, כך שכולם עובדים מאותו בסיס</span></div>
+    </div>
+    <div class="promptbox">
+      <div class="pb-top"><span>דוגמה להוראות פרויקט</span><button class="copy">העתקה</button></div>
+      <div class="pb-body">אנחנו [הארגון או הצוות]. אני [תפקיד].
+אני עוסק/ת בעיקר ב[סוגי העבודה], מול [קהל או גורם].
+הטון שלנו: [שתיים־שלוש מילים].
+לעולם לא: [ביטויים או הרגלים שאנחנו נמנעים מהם].
+כשחסר לך מידע, תשאל אותי, אל תמציא.</div>
+    </div>
+    <div class="note"><b>גבול:</b> לא מעלים פרטים אישיים מזוהים, מספרי חשבון או רשומות בנק. מסמכים כן, אנשים לא.</div>
+  </section>
+  <!-- 7 -->
+  <section class="slide" data-hint="סקיל">
+    <div class="term">Skill</div>
+    <h2>סקיל, השיטה שלכם, שמורה</h2>
+    <p class="lede">פרויקט מחזיק ידע. סקיל מחזיק <b>שיטה</b>, ושיטה יכולה להיות של כתיבה, או של עיצוב.</p>
+    <div class="why">
+      <div><span class="k">Writing</span><span>המבנה והטון שלכם, בכל סוג טקסט שאתם כותבים שוב ושוב</span></div>
+      <div><span class="k">Design</span><span>הצבעים והגופנים שלכם, מצגת, דף, מסמך</span></div>
+      <div><span class="k">Reusable</span><span>נכתב פעם אחת, מופעל בכל פעם מחדש</span></div>
+      <div><span class="k">Consistency</span><span>כמה אנשים, אותו קול ואותו מראה</span></div>
+    </div>
+  </section>
+  <!-- 8 -->
+  <section class="slide" data-hint="זיכרון">
+    <div class="term">Memory</div>
+    <h2>זיכרון</h2>
+    <p class="lede">קלוד זוכר מה סיפרתם לו, גם בשיחה הבאה, גם בשבוע הבא.</p>
+    <div class="why">
+      <div><span class="k">Continuity</span><span>עבודה מתמשכת חוזרת לאותם נושאים ולאותם אנשים</span></div>
+      <div><span class="k">Org first</span><span>בארגון, בעל החשבון מדליק ראשון. עד אז אף אחד לא יכול להפעיל לעצמו</span></div>
+      <div><span class="k">Then you</span><span>אחרי זה כל אחד מדליק ומכבה בהגדרות האישיות שלו</span></div>
+      <div><span class="k">Control</span><span>רואים מה נשמר, עורכים ומוחקים, כולל נושאים רגישים</span></div>
+    </div>
+    <p class="big">ההבדל בין כלי שמתחילים איתו מחדש כל בוקר, לבין עמית שמכיר את התיק.</p>
+  </section>
+  <!-- 9 -->
+  <section class="slide" data-hint="מסמך דיגיטלי">
+    <div class="term">Artifact</div>
+    <h2>מסמך דיגיטלי חי</h2>
+    <p class="lede">לא מסמך ולא קובץ, עמוד אינטראקטיבי שנבנה ממשפט בעברית. בלי שורת קוד אחת.</p>
+    <ul>
+      <li>מחשבון שמראה למישהו מה המספרים אומרים בפועל</li>
+      <li>עמוד נחיתה</li>
+      <li>כרטיס מידע על עמוד אחד</li>
+      <li>לוח מעקב אחר משימות ומועדים</li>
+      <li>טופס שממנו יוצא מסמך מוכן</li>
+    </ul>
+    <div class="promptbox">
+      <div class="pb-top"><span>דוגמה</span><button class="copy">העתקה</button></div>
+      <div class="pb-body">תבנה לי עמוד אינטראקטיבי ל[מה שאני צריך/ה].
+מי ישתמש בו: [מי]. מה הוא צריך לעשות שם: [מה].
+בעברית, מימין לשמאל, ושיעבוד גם בטלפון.
+תתחיל מגרסה פשוטה ואני אגיד לך מה לשנות.</div>
+    </div>
+  </section>
+  <!-- 10 -->
+  <section class="slide" data-hint="ניתוח נתונים">
+    <div class="term">Data</div>
+    <h2>ניתוח קבצים ונתונים</h2>
+    <p class="lede">מעלים קובץ ושואלים אותו שאלות בשפה רגילה. בלי נוסחאות ובלי פיבוט.</p>
+    <div class="why">
+      <div><span class="k">Trends</span><span>מה השתנה לאורך זמן</span></div>
+      <div><span class="k">Outliers</span><span>מה חריג, מה חסר, ומה נפל בין הכיסאות</span></div>
+      <div><span class="k">Charts</span><span>גרף מוכן להצגה</span></div>
+    </div>
+    <div class="promptbox">
+      <div class="pb-top"><span>דוגמה</span><button class="copy">העתקה</button></div>
+      <div class="pb-body">מצורף קובץ נתונים. לפני שאתה מנתח, תגיד לי מה יש בו ומה חסר או נראה חריג.
+אחר כך: שלוש מגמות שאתה רואה, וגרף אחד שממחיש את החשובה שבהן.
+אל תסיק מסקנה שאין לה כיסוי בנתונים.</div>
+    </div>
+    <div class="note"><b>לפני העלאה:</b> מוחקים שמות ופרטים מזהים. סכומים ותאריכים מספיקים לניתוח.</div>
+  </section>
+  <!-- 11 -->
+  <section class="slide" data-hint="מילון">
+    <div class="term">Glossary</div>
+    <h2>מילון מונחים</h2>
+    <p class="lede">הממשק באנגלית. אלה המונחים שתפגשו בו.</p>
+    <div class="scroll">
+      <table>
+        <tr><th>המונח</th><th>מה זה</th></tr>
+        <tr><td class="en">Prompt</td><td>ההוראה שאתם כותבים</td></tr>
+        <tr><td class="en">Project</td><td>מרחב עבודה עם ידע והוראות קבועים</td></tr>
+        <tr><td class="en">Custom Instructions</td><td>ההוראות הקבועות בתוך הפרויקט</td></tr>
+        <tr><td class="en">Skill</td><td>שיטת עבודה שמורה שאפשר להפעיל שוב</td></tr>
+        <tr><td class="en">Memory</td><td>מה שקלוד זוכר עליכם בין שיחות</td></tr>
+        <tr><td class="en">Artifact</td><td>תוצר חי, עמוד או כלי אינטראקטיבי</td></tr>
+        <tr><td class="en">Research</td><td>איסוף מעמיק מכמה מקורות עם הפניות</td></tr>
+        <tr><td class="en">Connector</td><td>חיבור למערכת חיצונית</td></tr>
+        <tr><td class="en">Context</td><td>כל מה שקלוד יודע ברגע נתון בשיחה</td></tr>
+        <tr><td class="en">Hallucination</td><td>כשקלוד ממציא עובדה בביטחון, ולכן מצליבים</td></tr>
+      </table>
+    </div>
+  </section>
+  <!-- lesson 2 divider -->
+  <section class="slide center divider" id="lesson2-divider" data-hint="שיעור 2">
+    <div class="divider-num">02</div>
+    <div class="term">Lesson</div>
+    <h1>שיעור 2</h1>
+    <p class="lede">סקילים, פיתוח כלי אמיתי, ואפיון אתר עם קלוד</p>
+  </section>
+  <!-- 2b, recording -->
+  <section class="slide" data-hint="הקלטת השיעור">
+    <div class="term">Recording</div>
+    <h2>הקלטת שיעור 2</h2>
+    <p class="lede">ההקלטה תתווסף כאן בקרוב.</p>
+  </section>
+  <!-- lesson 2, skill -->
+  <section class="slide" data-hint="סקיל">
+    <div class="term">Skill</div>
+    <h2>דיוק בכתיבה ובשמירה של סקיל</h2>
+    <p class="lede">חידדנו איך מנסחים סקיל, מה כותבים בתיאור שלו כדי שקלוד יפעיל אותו בדיוק בזמן הנכון, ואיך שומרים אותו בפועל.</p>
+    <div class="why">
+      <div><span class="k">תיאור</span><span>משפט אחד או שניים, מתי בדיוק להפעיל את הסקיל, במילים שבהן תבקשו את זה בעצמכם</span></div>
+      <div><span class="k">תוכן</span><span>ההוראות שקלוד יעקוב אחריהן בכל פעם שהסקיל רץ, בלי לכתוב אותן מחדש</span></div>
+      <div><span class="k">שמירה</span><span>מבקשים מקלוד לשמור את זה כסקיל, והוא בונה את הקובץ ומציע לכם לאשר</span></div>
+    </div>
+    <div class="promptbox">
+      <div class="pb-top"><span>דוגמה</span><button class="copy">העתקה</button></div>
+      <div class="pb-body">אני עושה את הפעולה הזו שוב ושוב: [תיאור השיטה או התהליך].
+תשמור לי את זה כסקיל, כדי שאוכל להפעיל אותו בלחיצה בפעם הבאה.
+תיאור קצר מתי להפעיל: [באילו מצבים].</div>
+    </div>
+  </section>
+  <!-- lesson 2, tool -->
+  <section class="slide" data-hint="כלי דיגיטלי ופרסום">
+    <div class="term">Tool</div>
+    <h2>פיתוח כלי דיגיטלי, והעלאה לרשת</h2>
+    <p class="lede">בונים עם קלוד כלי דיגיטלי, קובץ אחד, ומפרסמים אותו באינטרנט בחינם עם Netlify, בלי שרת ובלי לדעת לתכנת.</p>
+    <div class="flow">
+      <div class="step"><span class="num">1</span><span>בונים עם קלוד</span></div>
+      <div class="arrow">←</div>
+      <div class="step"><span class="num">2</span><span>מורידים את הקובץ</span></div>
+      <div class="arrow">←</div>
+      <div class="step"><span class="num">3</span><span>גוררים ל Netlify</span></div>
+      <div class="arrow">←</div>
+      <div class="step accent"><span class="num">4</span><span>מקבלים קישור חי</span></div>
+    </div>
+    <div class="why">
+      <div><span class="k">פרסום</span><span>נכנסים לכתובת Netlify Drop, וגוררים את הקובץ ישירות מהמחשב לתוך הדף</span></div>
+      <div><span class="k">עדכון</span><span>כשמבקשים מקלוד לשנות משהו, מורידים את הקובץ שוב, וגוררים אותו לאותו אתר, הגרסה מתעדכנת מיד</span></div>
+    </div>
+    <a class="linkbtn" href="https://app.netlify.com/drop" target="_blank" rel="noopener">פתיחת Netlify Drop ↗</a>
+  </section>
+  <!-- lesson 2, website spec -->
+  <section class="slide" data-hint="אפיון אתר">
+    <div class="term">Website</div>
+    <h2>אפיון אתר, ובקשה מקלוד להתנהג כמומחה</h2>
+    <p class="lede">התחלנו לחשוב על האתר, וביקשנו מקלוד אפיון. הוספנו לפרומפט את הבקשה להתנהג כמומחה בתחום, כדי לקבל תשובה מדויקת יותר, לא כללית.</p>
+    <div class="why">
+      <div><span class="k">מומחה</span><span>מבקשים מקלוד להתנהג כמומחה בתחום הרלוונטי, ואז הוא עונה עם שיקולים של אנשי מקצוע, לא תשובה גנרית</span></div>
+      <div><span class="k">שאלות קודם</span><span>מבקשים ממנו לשאול שאלות לפני שהוא מציע מבנה, כדי שהאפיון יתאים למקרה הספציפי</span></div>
+      <div><span class="k">תשובה בסוף</span><span>אחרי שעניתם על השאלות, מקבלים מבנה ותוכן מוצעים לאתר, לא רק רעיון כללי</span></div>
+    </div>
+    <div class="promptbox">
+      <div class="pb-top"><span>דוגמה</span><button class="copy">העתקה</button></div>
+      <div class="pb-body">תתנהג כמומחה לבניית אתרים ולחוויית משתמש.
+אני רוצה לאפיין אתר עבור [מטרת האתר].
+לפני שאתה מציע מבנה, תשאל אותי שאלות שיעזרו לך להבין את הצרכים, קהל היעד והתוכן.
+שאל שאלה אחת בכל פעם.</div>
+    </div>
+  </section>
+  <!-- lesson 3 divider -->
+  <section class="slide center divider" id="lesson3-divider" data-hint="שיעור 3">
+    <div class="divider-num">03</div>
+    <div class="term">Lesson</div>
+    <h1>שיעור 3</h1>
+    <p class="lede">אפיון אתר ל"בית לאה", דף נחיתה, חיבור ל-Google Sheets וסליקה</p>
+  </section>
+  <!-- lesson 3, recap -->
+  <section class="slide" data-hint="מה למדנו בשיעור 3">
+    <div class="term">Recap</div>
+    <h2>מה למדנו בשיעור 3</h2>
+    <p class="lede">המשכנו מהאתר שאפיינו בשיעור הקודם, והפעם התקדמנו לבנייה בפועל, עם חיבור אמיתי לגיליון נתונים ולסליקה.</p>
+    <div class="why">
+      <div><span class="k">CMS</span><span>אפיון אתר דינמי עם מערכת ניהול תוכן עצמאית, כדי לעדכן תכנים, פודקאסטים וקבצים בלי תלות במפתח</span></div>
+      <div><span class="k">דף נחיתה</span><span>בניית דף נחיתה אינטראקטיבי להזמנת הספר "אין אחר שיחנך", עם מענה להתנגדויות, הבלטת יתרונות וטופס הזמנה</span></div>
+      <div><span class="k">Google Sheets</span><span>חיבור הטופס לגיליון נתונים בעזרת Apps Script, כל הזמנה נשמרת אוטומטית בשורה חדשה</span></div>
+      <div><span class="k">מייל אוטומטי</span><span>אוטומציה ששולחת מייל אישור ותודה מיידי לכל נרשם, בלי שום פעולה ידנית</span></div>
+      <div><span class="k">סליקה</span><span>השוואה בין שלושה פתרונות לחיבור סליקה אונליין: מורנינג, חשבונית ירוקה ו-Grow</span></div>
+    </div>
+  </section>
+  <!-- lesson 3, interactive homework -->
+  <section class="slide" data-hint="שיעורי בית ומילוי משימות">
+    <div class="term">Homework</div>
+    <h2>שיעורי בית ומילוי משימות</h2>
+    <p class="lede">ממלאים כאן ישירות, וכל מה שכותבים נשמר אוטומטית בגיליון המעקב שלי, בלי לשלוח קובץ בנפרד.</p>
+    <form class="formcard" id="lesson3-homework-form">
+      <div class="field">
+        <label for="hw-name">שם מלא</label>
+        <input type="text" id="hw-name" name="name" placeholder="איך לקרוא לכם בגיליון" required>
+      </div>
+      <div class="field">
+        <label for="hw-site-spec">דיוק אפיון האתר<span class="opt"> (אופציונלי)</span></label>
+        <textarea id="hw-site-spec" name="siteSpec" placeholder="מה סיכמתם לגבי מבנה האתר, התוכן והדרישות ממערכת הניהול?"></textarea>
+      </div>
+      <div class="field">
+        <label for="hw-landing-edit">עריכת דף הנחיתה<span class="opt"> (אופציונלי)</span></label>
+        <textarea id="hw-landing-edit" name="landingEdit" placeholder="אילו שינויים ביצעתם בדף הנחיתה של הספר?"></textarea>
+      </div>
+      <div class="field">
+        <label for="hw-practice">תרגול עצמאי, דף נחיתה חדש<span class="opt"> (אופציונלי)</span></label>
+        <textarea id="hw-practice" name="practice" placeholder="קישור לדף הנחיתה החדש שבניתם, ובכמה מילים מה תרגלתם"></textarea>
+      </div>
+      <div class="field">
+        <label for="hw-payment-status">סטטוס בירור סליקה<span class="opt"> (אופציונלי)</span></label>
+        <input type="text" id="hw-payment-status" name="paymentStatus" placeholder="לאיזה פתרון פניתם, ומה הסטטוס?">
+      </div>
+      <div class="formbar">
+        <button type="submit" class="savebtn">שמור משימות בגליון</button>
+        <span class="form-status" role="status"></span>
+      </div>
+    </form>
+    <div class="note"><b>לתשומת לב:</b> הטופס כאן מוכן, אבל עדיין לא מחובר לגיליון בפועל, זה יקרה ברגע שתפרסמו את קוד ה-Apps Script המצורף ותדביקו כאן את הקישור שהוא ייתן לכם.</div>
+  </section>
+  <script>
+  (function(){
+    // להחליף בקישור ה-Web App שמתקבל אחרי פריסת ה-Apps Script (ראו הקובץ הנפרד שנשלח)
+    var APPS_SCRIPT_URL = "PASTE_APPS_SCRIPT_WEB_APP_URL_HERE";
+    var form = document.getElementById('lesson3-homework-form');
+    if(!form) return;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var status = form.querySelector('.form-status');
+      var btn = form.querySelector('.savebtn');
+      if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('PASTE_APPS_SCRIPT_WEB_APP_URL_HERE') !== -1){
+        status.textContent = 'הטופס עדיין לא מחובר לגיליון, יש להדביק כאן את קישור ה-Web App';
+        status.className = 'form-status err';
+        return;
+      }
+      var data = {
+        name: form.querySelector('#hw-name').value,
+        siteSpec: form.querySelector('#hw-site-spec').value,
+        landingEdit: form.querySelector('#hw-landing-edit').value,
+        practice: form.querySelector('#hw-practice').value,
+        paymentStatus: form.querySelector('#hw-payment-status').value,
+        ts: new Date().toISOString()
+      };
+      btn.disabled = true;
+      status.textContent = 'שומר...';
+      status.className = 'form-status';
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
+        body: JSON.stringify(data)
+      }).then(function(){
+        status.textContent = 'נשמר בהצלחה, תודה';
+        status.className = 'form-status ok';
+        form.reset();
+        btn.disabled = false;
+      }).catch(function(){
+        status.textContent = 'קרתה שגיאה בשמירה, נסו שוב';
+        status.className = 'form-status err';
+        btn.disabled = false;
+      });
+    });
+  })();
+  </script>
+  <!-- lesson 3, recording -->
+  <section class="slide" data-hint="הקלטת השיעור">
+    <div class="term">Recording</div>
+    <h2>הקלטת שיעור 3</h2>
+    <p class="lede">ההקלטה תתווסף כאן בקרוב.</p>
+  </section>
+  <!-- resources -->
+  <section class="slide" data-res="true" data-hint="משאבים">
+    <div class="term">Resources</div>
+    <h2>משאבים</h2>
+    <div class="resgrid">
+      <div class="resgroup">
+        <h3>Help Center</h3>
+        <a href="https://support.claude.com/" target="_blank" rel="noopener">מרכז התמיכה הרשמי של קלוד</a>
+      </div>
+      <div class="resgroup">
+        <h3>Settings Guide</h3>
+        <a href="https://claude.ai/code/artifact/ded00a73-a170-4a94-b33d-cf552ab387cf" target="_blank" rel="noopener">מדריך חי לתפריט ההגדרות, 16 מסכים עם הסבר לכל אחד</a>
+      </div>
+      <div class="resgroup">
+        <h3>להכיר את קלוד</h3>
+        <a href="https://shirazel.github.io/Guide-Claude/" target="_blank" rel="noopener">מדריך מלא, עם דוגמאות מהכיתה</a>
+      </div>
+      <div class="resgroup">
+        <h3>Claude Design</h3>
+        <a href="https://support.claude.com/en/articles/14604416-get-started-with-claude-design" target="_blank" rel="noopener">מדריך התחלה, בדפדפן ובדסקטופ</a>
+      </div>
+      <div class="resgroup">
+        <h3>Automated Email</h3>
+        <a href="https://shirazel.github.io/Automated-Email---Guide/" target="_blank" rel="noopener">מדריך: שליחת מייל אוטומטי עם Apps Script</a>
+      </div>
+      <div class="resgroup">
+        <h3>Netlify Drop</h3>
+        <a href="https://app.netlify.com/drop" target="_blank" rel="noopener">העלאת קובץ לרשת בחינם, גוררים ומקבלים קישור חי</a>
+      </div>
+    </div>
+    <p class="lede">שאלה שלא נענתה כאן, אפשר לפנות ישירות.</p>
+    <footer class="sig">
+      <span>© שירה רוט זליקוביץ · הוראה יצירתית עם AI</span><br>
+      <span>
+        <a href="https://wa.me/972523930628" target="_blank" rel="noopener">ווטסאפ</a>
+        <span class="sep">·</span>
+        <a href="https://www.lomdot.org/" target="_blank" rel="noopener">האתר שלי</a>
+        <span class="sep">·</span>
+        <a href="https://www.lomdot.org/" target="_blank" rel="noopener">להזמנת סדנאות בינה מלאכותית</a>
+      </span>
+    </footer>
+  </section>
+</div>
+<div class="bar">
+  <div class="progress" id="prog"></div>
+  <button id="prev">→ הקודם</button>
+  <button id="next" class="nextbtn">הבא ←</button>
+  <span class="count" id="count">1 / 13</span>
+  <span class="hint" id="hint"></span>
+  <button id="back" hidden>↩ חזרה</button>
+  <button id="menu" aria-haspopup="true" aria-expanded="false">שקפים</button>
+  <div class="menupop" id="menupop" hidden></div>
+  <button id="res">משאבים</button>
+  <span class="spacer"></span>
+  <span class="minisig">שירה רוט זליקוביץ · <a href="https://wa.me/972523930628" target="_blank" rel="noopener">ווטסאפ</a> · <a href="https://www.lomdot.org/" target="_blank" rel="noopener">lomdot.org</a></span>
+  <button id="theme">בהיר / כהה</button>
+  <button id="full">מסך מלא</button>
+</div>
+</div>
+<script>
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var i=0;
+  try{var s=localStorage.getItem('claude-intro-slide');if(s!==null){var n=parseInt(s,10);if(n>=0&&n<slides.length)i=n}}catch(e){}
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(el,k){el.classList.toggle('on',k===i)});
+    document.getElementById('count').textContent=(i+1)+' / '+slides.length;
+    document.getElementById('hint').textContent=slides[i].dataset.hint||'';
+    document.getElementById('prog').style.width=((i+1)/slides.length*100)+'%';
+    try{localStorage.setItem('claude-intro-slide',String(i))}catch(e){}
+  }
+  document.getElementById('next').onclick=function(){show(i+1)};
+  document.getElementById('prev').onclick=function(){show(i-1)};
+  var resIndex=slides.findIndex(function(s){return s.dataset.res==='true'});
+  var cameFrom=null;
+  var backBtn=document.getElementById('back');
+  function setBack(from){cameFrom=from;backBtn.hidden=(from===null)}
+  document.getElementById('res').onclick=function(){
+    if(i!==resIndex)setBack(i);
+    show(resIndex);
+  };
+  [].forEach.call(document.querySelectorAll('.toc-item'),function(btn){
+    btn.onclick=function(){
+      var target=document.getElementById(btn.dataset.target);
+      var idx=slides.indexOf(target);
+      if(idx>=0){setBack(i);show(idx)}
+    };
+  });
+  backBtn.onclick=function(){
+    var t=cameFrom===null?0:cameFrom;
+    setBack(null);
+    show(t);
+  };
+  var menuBtn=document.getElementById('menu'), pop=document.getElementById('menupop'), items=[];
+  slides.forEach(function(s,k){
+    var h=s.querySelector('h1,h2');
+    var b=document.createElement('button');
+    b.innerHTML='<span class="n">'+(k+1)+'</span> ';
+    b.appendChild(document.createTextNode(h?h.textContent.trim():'שקף'));
+    b.onclick=function(){closeMenu();if(k!==i)setBack(i);show(k)};
+    pop.appendChild(b);
+    items.push(b);
+  });
+  function markMenu(){items.forEach(function(b,k){b.classList.toggle('cur',k===i)})}
+  function openMenu(){
+    markMenu();pop.hidden=false;menuBtn.setAttribute('aria-expanded','true');
+    if(items[i])items[i].scrollIntoView({block:'nearest'});
+  }
+  function closeMenu(){pop.hidden=true;menuBtn.setAttribute('aria-expanded','false')}
+  menuBtn.onclick=function(e){e.stopPropagation();pop.hidden?openMenu():closeMenu()};
+  pop.onclick=function(e){e.stopPropagation()};
+  document.addEventListener('click',function(){if(!pop.hidden)closeMenu()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!pop.hidden)closeMenu()});
+  document.addEventListener('keydown',function(e){
+    if(/^(INPUT|TEXTAREA)$/.test(e.target.tagName))return;
+    if(e.key==='ArrowLeft'||e.key==='PageDown'||e.key===' '){e.preventDefault();show(i+1)}
+    if(e.key==='ArrowRight'||e.key==='PageUp'){e.preventDefault();show(i-1)}
+    if(e.key==='Home')show(0);
+    if(e.key==='End')show(slides.length-1);
+  });
+  document.getElementById('full').onclick=function(){
+    if(document.fullscreenElement){document.exitFullscreen()}
+    else if(document.documentElement.requestFullscreen){document.documentElement.requestFullscreen()}
+  };
+  var root=document.documentElement;
+  document.getElementById('theme').onclick=function(){
+    var cur=root.getAttribute('data-theme');
+    var dark=cur?cur==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme',dark?'light':'dark');
+    try{localStorage.setItem('claude-intro-theme',dark?'light':'dark')}catch(e){}
+  };
+  try{var t=localStorage.getItem('claude-intro-theme');if(t)root.setAttribute('data-theme',t)}catch(e){}
+  [].forEach.call(document.querySelectorAll('.copy'),function(btn){
+    btn.onclick=function(){
+      var txt=btn.closest('.promptbox').querySelector('.pb-body').textContent.trim();
+      function done(){btn.textContent='הועתק';btn.classList.add('done');
+        setTimeout(function(){btn.textContent='העתקה';btn.classList.remove('done')},1600)}
+      function fallback(){
+        var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+        document.body.appendChild(ta);ta.select();
+        try{document.execCommand('copy');done()}catch(e){btn.textContent='העתיקו ידנית'}
+        document.body.removeChild(ta);
+      }
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,fallback)}
+      else{fallback()}
+    };
+  });
+  show(i);
+})();
+</script>
+
+</body>
+</html>
