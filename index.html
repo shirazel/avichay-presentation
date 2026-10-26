@@ -125,6 +125,15 @@ li::marker{color:var(--do)}
 .cover-sig-links a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--faint);padding-bottom:1px;font-weight:400}
 .cover-sig-links a:hover{opacity:.75;color:var(--ink)}
 .cover-sig-links .sep{margin:0 8px;opacity:.5;color:var(--faint)}
+.cover-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.cover-actions a,.cover-actions button{
+  font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;
+  border-radius:999px;padding:10px 24px;border:1.5px solid rgba(255,255,255,.55);
+  background:rgba(255,255,255,.14);color:#fff;transition:background .15s,transform .15s;
+}
+.cover-actions a:hover,.cover-actions button:hover{background:rgba(255,255,255,.26);transform:translateY(-2px)}
+.cover-actions .primary{background:#fff;color:var(--show);border-color:#fff}
+.cover-actions .primary:hover{background:#fff;opacity:.9;transform:translateY(-2px)}
 @media (max-width:620px){
   .cover-sig-links .sep{display:none}
   .cover-sig-links a{display:block;margin:3px 0}
@@ -162,6 +171,8 @@ tr:last-child td{border-bottom:none}
 .lesson-video .playbtn:hover .circle{transform:scale(1.08);background:rgba(255,255,255,.26)}
 .lesson-video .vt{font-size:clamp(15px,2vh,19px);font-weight:600}
 .lesson-video .vs{font-size:13px;color:rgba(255,255,255,.75)}
+.lesson-video.pending{cursor:default}
+.lesson-video.pending .circle{opacity:.55}
 .notebook-card{
   display:flex;flex-direction:column;justify-content:center;gap:9px;min-height:120px;
   background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:var(--shadow);
@@ -239,6 +250,11 @@ tr:last-child td{border-bottom:none}
 .form-status{font-size:14px;font-weight:600;min-height:20px}
 .form-status.ok{color:var(--show)}
 .form-status.err{color:var(--warn)}
+.why a.k{text-decoration:none;cursor:pointer;color:var(--show);background:var(--show-bg);font-variant-numeric:tabular-nums;min-width:3.6em;text-align:center}
+.why a.k:hover{opacity:.8}
+.timeline{gap:11px}
+.tlink{font-family:"Poppins",system-ui,sans-serif;direction:ltr;unicode-bidi:isolate;font-size:.75em;font-weight:600;color:var(--show);background:var(--show-bg);border-radius:999px;padding:1px 8px;text-decoration:none;margin-inline-start:4px;white-space:nowrap}
+.tlink:hover{opacity:.8}
 </style>
 </head>
 <body>
@@ -251,6 +267,10 @@ tr:last-child td{border-bottom:none}
       <div class="eyebrow">בינה מלאכותית מעשית</div>
       <h1>קלוד</h1>
       <p class="big">עוזר חכם שמדבר בשפה שלכם, כותב, בונה ומנתח, ולומד להכיר אתכם עם הזמן.</p>
+      <div class="cover-actions">
+        <a class="primary" href="https://us06web.zoom.us/j/89862853687" target="_blank" rel="noopener">הצטרפות למפגש בזום ↗</a>
+        <button type="button" data-target="toc">מעבר לתוכן הקורס</button>
+      </div>
     </div>
     <div class="cover-sig">
       <span class="cover-sig-name">שירה רוט זליקוביץ · הוראה יצירתית עם AI</span>
@@ -264,7 +284,7 @@ tr:last-child td{border-bottom:none}
     </div>
   </section>
   <!-- toc -->
-  <section class="slide" data-hint="תוכן העניינים">
+  <section class="slide" id="toc" data-hint="תוכן העניינים">
     <div class="term">Contents</div>
     <h2>תוכן העניינים</h2>
     <p class="lede">הקורס בנוי ממפגשים, כל אחד עם השקפים שלו.</p>
@@ -288,6 +308,13 @@ tr:last-child td{border-bottom:none}
         <span class="toc-text">
           <span class="toc-title">שיעור 3</span>
           <span class="toc-sub">אפיון אתר ל"בית לאה", דף נחיתה, Google Sheets וסליקה</span>
+        </span>
+      </button>
+      <button class="toc-item" type="button" data-target="lesson4-divider">
+        <span class="toc-num">04</span>
+        <span class="toc-text">
+          <span class="toc-title">שיעור 4</span>
+          <span class="toc-sub">הדרך לבניית האתר, Decap CMS, מסגרת עיצוב וסקילים</span>
         </span>
       </button>
     </div>
@@ -516,7 +543,10 @@ tr:last-child td{border-bottom:none}
   <section class="slide" data-hint="הקלטת השיעור">
     <div class="term">Recording</div>
     <h2>הקלטת שיעור 2</h2>
-    <p class="lede">ההקלטה תתווסף כאן בקרוב.</p>
+    <p class="lede">צפייה חוזרת בשיעור.</p>
+    <div class="embedwrap">
+      <iframe class="embed" src="https://www.youtube.com/embed/guGycnX5QzU" title="הקלטת השיעור" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
   </section>
   <!-- lesson 2, skill -->
   <section class="slide" data-hint="סקיל">
@@ -580,6 +610,15 @@ tr:last-child td{border-bottom:none}
     <h1>שיעור 3</h1>
     <p class="lede">אפיון אתר ל"בית לאה", דף נחיתה, חיבור ל-Google Sheets וסליקה</p>
   </section>
+  <!-- lesson 3, recording -->
+  <section class="slide" data-hint="הקלטת השיעור">
+    <div class="term">Recording</div>
+    <h2>הקלטת שיעור 3</h2>
+    <p class="lede">צפייה חוזרת בשיעור.</p>
+    <div class="embedwrap">
+      <iframe class="embed" src="https://www.youtube.com/embed/E5QXgrnxcZc" title="הקלטת השיעור" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </section>
   <!-- lesson 3, recap -->
   <section class="slide" data-hint="מה למדנו בשיעור 3">
     <div class="term">Recap</div>
@@ -624,12 +663,11 @@ tr:last-child td{border-bottom:none}
         <span class="form-status" role="status"></span>
       </div>
     </form>
-    <div class="note"><b>לתשומת לב:</b> הטופס כאן מוכן, אבל עדיין לא מחובר לגיליון בפועל, זה יקרה ברגע שתפרסמו את קוד ה-Apps Script המצורף ותדביקו כאן את הקישור שהוא ייתן לכם.</div>
   </section>
   <script>
   (function(){
     // להחליף בקישור ה-Web App שמתקבל אחרי פריסת ה-Apps Script (ראו הקובץ הנפרד שנשלח)
-    var APPS_SCRIPT_URL = "PASTE_APPS_SCRIPT_WEB_APP_URL_HERE";
+    var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlCX9_vt9FmHCjo3GYgGf3H2YqDAVAdXBdKMenL3lkSqJqSsQP0IkectvU364eGtDtGQ/exec";
     var form = document.getElementById('lesson3-homework-form');
     if(!form) return;
     form.addEventListener('submit', function(e){
@@ -670,11 +708,73 @@ tr:last-child td{border-bottom:none}
     });
   })();
   </script>
-  <!-- lesson 3, recording -->
+  <!-- lesson 4 divider -->
+  <section class="slide center divider" id="lesson4-divider" data-hint="שיעור 4">
+    <div class="divider-num">04</div>
+    <div class="term">Lesson</div>
+    <h1>שיעור 4</h1>
+    <p class="lede">הדרך לבניית האתר, מסך ניהול, מסגרת עיצוב וסקילים</p>
+  </section>
+  <!-- lesson 4, recording -->
   <section class="slide" data-hint="הקלטת השיעור">
     <div class="term">Recording</div>
-    <h2>הקלטת שיעור 3</h2>
-    <p class="lede">ההקלטה תתווסף כאן בקרוב.</p>
+    <h2>הקלטת שיעור 4</h2>
+    <p class="lede">צפייה חוזרת בשיעור.</p>
+    <div class="embedwrap">
+      <iframe class="embed" src="https://www.youtube.com/embed/TUbrpkYVhaM" title="הקלטת השיעור" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </section>
+  <!-- lesson 4, recap part 1 -->
+  <section class="slide" data-hint="סיכום שיעור 4, חלק 1">
+    <div class="term">Recap</div>
+    <h2>סיכום שיעור 4, חלק 1</h2>
+    <p class="lede">מה עשינו בשיעור, לפי הסדר. לחיצה על הזמן פותחת את ההקלטה בדיוק ברגע הזה. היעד: אתר ראשון באוויר עד 1.11.26.</p>
+    <div class="why timeline">
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=30" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="30" title="מעבר לרגע הזה בהקלטה">00:30</a><span><b>משימה מתוזמנת.</b> תזכורת קבועה שקלוד מריץ לבד, ובודקת את ההתקדמות מול היעד של 1.11.26</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=60" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="60" title="מעבר לרגע הזה בהקלטה">01:00</a><span><b>חיפוש בשיחות.</b> מציאת השיחה הקודמת על האתר בעזרת מילה אחת שהופיעה בה</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=410" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="410" title="מעבר לרגע הזה בהקלטה">06:50</a><span><b>השוואת דרכים.</b> וורדפרס, Wix ו-Webflow, מערכות ניהול נפרדות, או אתר שנבנה כולו בקלוד</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=630" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="630" title="מעבר לרגע הזה בהקלטה">10:30</a><span><b>שתי דרכים בקוד.</b> אתר עם Decap CMS ומסך ניהול בכתובת <bdi dir="ltr">/admin</bdi>, מול אתר דינמי עם Payload. ההמלצה: להתחיל בדרך הראשונה, וקורסי המדף בשלב הבא</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=1110" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="1110" title="מעבר לרגע הזה בהקלטה">18:30</a><span><b>נקודת פתיחה.</b> בקשה מקלוד לסכם את ההחלטות, כדי להמשיך בשיחה חדשה</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=1290" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="1290" title="מעבר לרגע הזה בהקלטה">21:30</a><span><b>דף הנחיתה לספר.</b> מעבר על הדף של "אין אחר שיחנך", כולל ההמלצות שעוד צריך להחליף בתוכן אמיתי</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=1550" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="1550" title="מעבר לרגע הזה בהקלטה">25:50</a><span><b>סקילים.</b> איפה הסקילים נמצאים בקלוד, ודוגמה לסקיל עיצוב עם שליטה בפונטים ובצבעים</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=1990" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="1990" title="מעבר לרגע הזה בהקלטה">33:10</a><span><b>התקנת סקיל.</b> הסקיל ui-ux-pro-max מקובץ zip, והפעלה שלו בשיחה</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=2150" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="2150" title="מעבר לרגע הזה בהקלטה">35:50</a><span><b>דף נחיתה לשירותים.</b> דף ההרשמה של בית לא"ה לשנת תשפ"ח, שבו בתי ספר משריינים מקום, וכל פנייה נשמרת בגיליון לידים</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=2310" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="2310" title="מעבר לרגע הזה בהקלטה">38:30</a><span><b>טקסטים במקום אחד.</b> בעזרת הסקיל לעיצוב, כל הטקסטים של דף הנחיתה לספר עברו לבלוק אחד בראש הקובץ, כך שמשנים מילה בלי לחפש בקוד</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=2610" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="2610" title="מעבר לרגע הזה בהקלטה">43:30</a><span><b>איפה לפרסם את הדף.</b> האם לפרסם את הדף דרך Apps Script של גוגל או ב-Netlify, ואיך מחברים אליו את הדומיין <bdi dir="ltr">betlea.co.il</bdi></span></div>
+    </div>
+  </section>
+  <!-- lesson 4, recap part 2 -->
+  <section class="slide" data-hint="סיכום שיעור 4, חלק 2">
+    <div class="term">Recap</div>
+    <h2>סיכום שיעור 4, חלק 2</h2>
+    <p class="lede">החלק השני של השיעור, מהמעבר לשיחה חדשה ועד מסך הניהול.</p>
+    <div class="why timeline">
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=2730" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="2730" title="מעבר לרגע הזה בהקלטה">45:30</a><span><b>שיחה חדשה בפרויקט.</b> המשך העבודה בתוך הפרויקט, עם נקודת הפתיחה וקובץ האפיון מצורף מחדש</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=2830" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="2830" title="מעבר לרגע הזה בהקלטה">47:10</a><span><b>סליקה.</b> Grow לעוסק מורשה, ואיך מפיקים חשבוניות</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=3030" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="3030" title="מעבר לרגע הזה בהקלטה">50:30</a><span><b>תשלום ודומיין.</b> כתובת למשלוח בדף התשלום, קניית דומיין, וטופס בתוך האתר או קישור לדף הסליקה</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=3530" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="3530" title="מעבר לרגע הזה בהקלטה">58:50</a><span><b>סרגל בנייד.</b> Claude Design, יחד עם הסקיל, הציע שלוש אפשרויות לסרגל פעולה בתחתית המסך בטלפון</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=3810" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="3810" title="מעבר לרגע הזה בהקלטה">63:30</a><span><b>מסך ניהול לדוגמה.</b> איך ייראה ממשק הניהול של האתר בעברית, עם הקטגוריות שלו</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=4110" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="4110" title="מעבר לרגע הזה בהקלטה">68:30</a><span><b>מסגרת עיצוב.</b> בקשה לשלד של כל עמוד באתר, כשאת התכנים מעלים בהמשך</span></div>
+      <div><a class="k" href="https://youtu.be/TUbrpkYVhaM?t=4380" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="4380" title="מעבר לרגע הזה בהקלטה">73:00</a><span><b>בדיקה בעברית.</b> בדיקה שמסך הניהול מסתדר מימין לשמאל, ומה עוד צריך לתקן בו</span></div>
+    </div>
+  </section>
+  <!-- lesson 4, tools -->
+  <section class="slide" data-hint="כלים שכדאי לזכור">
+    <div class="term">Tools</div>
+    <h2>כלים שכדאי לזכור</h2>
+    <p class="lede">כמה דברים קטנים מהשיעור שחוסכים הרבה זמן כשהעבודה על האתר נמשכת לאורך כמה שיחות.</p>
+    <div class="why">
+      <div><span class="k">שיחה חדשה</span><span>כששיחה מתארכת, מבקשים מקלוד נקודת פתיחה מסכמת, מדביקים אותה בשיחה חדשה ומצרפים שוב את הקבצים, כי קבצים לא עוברים לבד <a class="tlink" href="https://youtu.be/TUbrpkYVhaM?t=1110" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="1110" title="מעבר לרגע הזה בהקלטה">18:30</a></span></div>
+      <div><span class="k">חיפוש</span><span>החיפוש בסרגל הצד מוצא שיחה קודמת לפי מילה אחת מתוכה <a class="tlink" href="https://youtu.be/TUbrpkYVhaM?t=60" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="60" title="מעבר לרגע הזה בהקלטה">01:00</a></span></div>
+      <div><span class="k">סקיל חדש</span><span>מתקינים סקיל מקובץ zip, ומפעילים אותו בשיחה עם / ושם הסקיל, למשל <bdi dir="ltr">/ui-ux-pro-max</bdi> <a class="tlink" href="https://youtu.be/TUbrpkYVhaM?t=1990" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="1990" title="מעבר לרגע הזה בהקלטה">33:10</a></span></div>
+      <div><span class="k">משימה מתוזמנת</span><span>תזכורת קבועה שקלוד מריץ לבד, ובודקת מה הושלם ומה עוד חסר מול היעד <a class="tlink" href="https://youtu.be/TUbrpkYVhaM?t=30" target="_blank" rel="noopener" data-vid="TUbrpkYVhaM" data-t="30" title="מעבר לרגע הזה בהקלטה">00:30</a></span></div>
+    </div>
+    <div class="promptbox">
+      <div class="pb-top"><span>מעבר לשיחה חדשה</span><button class="copy">העתקה</button></div>
+      <div class="pb-body">אני רוצה להמשיך את העבודה בשיחה חדשה.
+תכתוב לי סיכום ונקודת פתיחה, בגוף ראשון, עם ההחלטות שהתקבלו והשאלות שעוד פתוחות, כדי שאוכל להדביק אותו שם.
+תגיד לי גם אילו קבצים צריך לצרף מחדש.</div>
+    </div>
   </section>
   <!-- resources -->
   <section class="slide" data-res="true" data-hint="משאבים">
@@ -728,6 +828,7 @@ tr:last-child td{border-bottom:none}
   <button id="back" hidden>↩ חזרה</button>
   <button id="menu" aria-haspopup="true" aria-expanded="false">שקפים</button>
   <div class="menupop" id="menupop" hidden></div>
+  <button id="tocbtn" type="button" data-target="toc">תוכן העניינים</button>
   <button id="res">משאבים</button>
   <span class="spacer"></span>
   <span class="minisig">שירה רוט זליקוביץ · <a href="https://wa.me/972523930628" target="_blank" rel="noopener">ווטסאפ</a> · <a href="https://www.lomdot.org/" target="_blank" rel="noopener">lomdot.org</a></span>
@@ -739,14 +840,12 @@ tr:last-child td{border-bottom:none}
 (function(){
   var slides=[].slice.call(document.querySelectorAll('.slide'));
   var i=0;
-  try{var s=localStorage.getItem('claude-intro-slide');if(s!==null){var n=parseInt(s,10);if(n>=0&&n<slides.length)i=n}}catch(e){}
   function show(n){
     i=Math.max(0,Math.min(slides.length-1,n));
     slides.forEach(function(el,k){el.classList.toggle('on',k===i)});
     document.getElementById('count').textContent=(i+1)+' / '+slides.length;
     document.getElementById('hint').textContent=slides[i].dataset.hint||'';
     document.getElementById('prog').style.width=((i+1)/slides.length*100)+'%';
-    try{localStorage.setItem('claude-intro-slide',String(i))}catch(e){}
   }
   document.getElementById('next').onclick=function(){show(i+1)};
   document.getElementById('prev').onclick=function(){show(i-1)};
@@ -758,12 +857,23 @@ tr:last-child td{border-bottom:none}
     if(i!==resIndex)setBack(i);
     show(resIndex);
   };
-  [].forEach.call(document.querySelectorAll('.toc-item'),function(btn){
+  [].forEach.call(document.querySelectorAll('[data-target]'),function(btn){
     btn.onclick=function(){
       var target=document.getElementById(btn.dataset.target);
       var idx=slides.indexOf(target);
-      if(idx>=0){setBack(i);show(idx)}
+      if(idx>=0){if(idx!==i)setBack(i);show(idx)}
     };
+  });
+  [].forEach.call(document.querySelectorAll('a[data-vid]'),function(a){
+    a.addEventListener('click',function(e){
+      var vid=a.dataset.vid,t=a.dataset.t;
+      var fr=document.querySelector('iframe.embed[src*="'+vid+'"]');
+      if(!fr)return;
+      e.preventDefault();
+      fr.src='https://www.youtube.com/embed/'+vid+'?start='+t+'&autoplay=1';
+      var idx=slides.indexOf(fr.closest('.slide'));
+      if(idx>=0){if(idx!==i)setBack(i);show(idx)}
+    });
   });
   backBtn.onclick=function(){
     var t=cameFrom===null?0:cameFrom;
