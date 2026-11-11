@@ -317,6 +317,13 @@ tr:last-child td{border-bottom:none}
           <span class="toc-sub">הדרך לבניית האתר, Decap CMS, מסגרת עיצוב וסקילים</span>
         </span>
       </button>
+      <button class="toc-item" type="button" data-target="lesson5-divider">
+        <span class="toc-num">05</span>
+        <span class="toc-text">
+          <span class="toc-title">שיעור 5</span>
+          <span class="toc-sub">האתר עולה לאוויר: גיטהאב, GitHub Pages ושינוי ראשון לבד</span>
+        </span>
+      </button>
     </div>
     <a class="notebook-card" href="https://notebook.google.com/notebook/71931c1a-ad9d-40bd-b4ec-9f67eb5b251f" target="_blank" rel="noopener">
       <span class="nb-mark">Gemini Notebook</span>
@@ -774,6 +781,94 @@ tr:last-child td{border-bottom:none}
       <div class="pb-body">אני רוצה להמשיך את העבודה בשיחה חדשה.
 תכתוב לי סיכום ונקודת פתיחה, בגוף ראשון, עם ההחלטות שהתקבלו והשאלות שעוד פתוחות, כדי שאוכל להדביק אותו שם.
 תגיד לי גם אילו קבצים צריך לצרף מחדש.</div>
+    </div>
+  </section>
+  <!-- lesson 5 divider -->
+  <section class="slide center divider" id="lesson5-divider" data-hint="שיעור 5">
+    <div class="divider-num">05</div>
+    <div class="term">Lesson</div>
+    <h1>שיעור 5</h1>
+    <p class="lede">האתר של בית לא"ה עולה לאוויר</p>
+  </section>
+  <!-- lesson 5, goal -->
+  <section class="slide" data-hint="המטרה של היום">
+    <div class="term">Goal</div>
+    <h2>המטרה של היום</h2>
+    <p class="lede">בסוף השיעור דף הבית שלך באוויר, בכתובת אמיתית שאפשר לפתוח בטלפון ולשלוח לאחרים. ואתה יודע לבד לעשות בו שינוי ולראות אותו עולה.</p>
+    <div class="why">
+      <div><span class="k">מפה</span><span>לדעת איפה כל דבר גר: קלוד מכין את הקבצים, הקבצים יושבים בגיטהאב, וגיטהאב מציג אותם בכתובת</span></div>
+      <div><span class="k">לשאול קודם</span><span>לבקש מקלוד שאלות הבהרה ותוכנית לפני שהוא מכין משהו</span></div>
+      <div><span class="k">צעד קטן</span><span>לא ממשיכים לשלב הבא לפני שהשלב הקודם עובד</span></div>
+      <div><span class="k">כשנתקעים</span><span>מעתיקים את השגיאה או מצלמים את המסך, ושואלים את קלוד: מה זה אומר, ומה לבדוק קודם?</span></div>
+    </div>
+  </section>
+  <!-- lesson 5, steps part 1 -->
+  <section class="slide" data-hint="צעד אחרי צעד, חלק 1">
+    <div class="term">Steps</div>
+    <h2>צעד אחרי צעד, חלק 1</h2>
+    <p class="lede">מהקובץ בקלוד ועד הקבצים בגיטהאב. בסוף כל צעד בודקים שהוא עבד, ורק אז ממשיכים.</p>
+    <div class="why">
+      <div><span class="k">1</span><span><b>מוצאים את דף הבית.</b> נכנסים לפרויקט של האתר בקלוד, ומוצאים את דף הבית שכבר בנית</span></div>
+      <div><span class="k">2</span><span><b>מכינים קובץ.</b> מבקשים מקלוד להכין את הדף כקובץ index.html אחד, ומורידים אותו למחשב. <i>בדיקה:</i> פותחים את הקובץ בדפדפן והדף נראה תקין</span></div>
+      <div><span class="k">3</span><span><b>פותחים חשבון גיטהאב.</b> נרשמים ומאשרים את המייל. שם המשתמש יופיע בכתובת האתר, אז כדאי לבחור שם שקשור לבית לא"ה</span></div>
+      <div><span class="k">4</span><span><b>יוצרים מאגר.</b> מאגר (repository) הוא תיקייה של הפרויקט בגיטהאב. יוצרים מאגר ציבורי חדש, למשל בשם <bdi dir="ltr">bet-lea</bdi></span></div>
+      <div><span class="k">5</span><span><b>מעלים את הקבצים.</b> <bdi dir="ltr">Add file</bdi> ואז <bdi dir="ltr">Upload files</bdi>, גוררים את index.html ואת התמונות אם יש, ולוחצים <bdi dir="ltr">Commit changes</bdi>. כל Commit הוא גרסה שנשמרת</span></div>
+    </div>
+  </section>
+  <!-- lesson 5, prompt: prepare file -->
+  <section class="slide" data-hint="הפרומפט להכנת הקובץ">
+    <div class="term">Prompt</div>
+    <h2>הפרומפט להכנת הקובץ</h2>
+    <p class="lede">לצעד 2. מדביקים בשיחה בפרויקט של האתר.</p>
+    <div class="promptbox">
+      <div class="pb-top"><span>הכנת דף הבית להעלאה</span><button class="copy">העתקה</button></div>
+      <div class="pb-body">אני רוצה להעלות את דף הבית שבנינו לאוויר, דרך GitHub Pages.
+תכין לי את הדף כקובץ index.html אחד, מוכן להעלאה, ותוודא שלושה דברים:
+1. שכל התמונות והלוגו כלולים, כדי שלא יופיעו תמונות שבורות.
+2. שקישורים לעמודים שעוד לא קיימים מסומנים כ"בקרוב" או מובילים לאזור בתוך הדף.
+3. שיש תגית שמונעת מגוגל להציג את האתר בחיפוש, עד שנשיק אותו רשמית.
+לפני שאתה מכין, תשאל אותי אם משהו לא ברור לך.</div>
+    </div>
+  </section>
+  <!-- lesson 5, steps part 2 -->
+  <section class="slide" data-hint="צעד אחרי צעד, חלק 2">
+    <div class="term">Steps</div>
+    <h2>צעד אחרי צעד, חלק 2</h2>
+    <p class="lede">מהקבצים בגיטהאב ועד אתר באוויר, ושינוי ראשון שאתה עושה לבד.</p>
+    <div class="why">
+      <div><span class="k">6</span><span><b>מפעילים את האתר.</b> בהגדרות המאגר (<bdi dir="ltr">Settings</bdi>) בוחרים <bdi dir="ltr">Pages</bdi>, מגדירים <bdi dir="ltr">Branch: main</bdi> ושומרים</span></div>
+      <div><span class="k">7</span><span><b>מחכים לווי הירוק.</b> אחרי דקה או שתיים מופיע וי ירוק ליד ההעלאה האחרונה במאגר. זה הסימן שהאתר עודכן</span></div>
+      <div><span class="k">8</span><span><b>פותחים בטלפון.</b> נכנסים לכתובת <bdi dir="ltr">שם-המשתמש.github.io/bet-lea</bdi>. האתר שלך באוויר</span></div>
+      <div><span class="k">9</span><span><b>שינוי ראשון לבד.</b> בוחרים משהו קטן לשנות, מבקשים מקלוד את הקובץ המעודכן, מעלים ומחליפים בגיטהאב, מחכים לווי הירוק ובודקים</span></div>
+      <div><span class="k">10</span><span><b>לא רואים את השינוי?</b> הדפדפן שומר עותק ישן כדי לטעון מהר יותר. במחשב מרעננים בכוח עם <bdi dir="ltr">Ctrl+Shift+R</bdi>, ובטלפון סוגרים את הלשונית ופותחים מחדש</span></div>
+    </div>
+  </section>
+  <!-- lesson 5, cycle and prompts -->
+  <section class="slide" data-hint="מחזור השינוי">
+    <div class="term">Cycle</div>
+    <h2>מחזור השינוי</h2>
+    <p class="lede">כל שינוי באתר עובר את אותה דרך: מבקשים, מקבלים קובץ, מעלים, בודקים. שני פרומפטים שכדאי לשמור.</p>
+    <div class="promptbox">
+      <div class="pb-top"><span>כשרוצים לשנות משהו</span><button class="copy">העתקה</button></div>
+      <div class="pb-body">אני רוצה לשנות באתר: [מה לשנות].
+תן לי את הקובץ index.html המלא והמעודכן, ותגיד לי במשפט אחד מה בדיוק שינית.</div>
+    </div>
+    <div class="promptbox" style="margin-top:14px">
+      <div class="pb-top"><span>כשנתקעים</span><button class="copy">העתקה</button></div>
+      <div class="pb-body">ניסיתי [מה עשיתי], וזה מה שקרה: [מדביקים את השגיאה או מצרפים צילום מסך].
+מה זה אומר, ומה לבדוק קודם? תסביר לי בפשטות, צעד אחד בכל פעם.</div>
+    </div>
+  </section>
+  <!-- lesson 5, homework -->
+  <section class="slide" data-hint="משימות להמשך">
+    <div class="term">Next</div>
+    <h2>משימות להמשך</h2>
+    <p class="lede">עד המפגש הבא.</p>
+    <div class="why">
+      <div><span class="k">1</span><span>לעשות לבד שינוי קטן אחד באתר, מתחילתו ועד סופו</span></div>
+      <div><span class="k">2</span><span>לבקש מקלוד לסכם את השיעור לקובץ בפרויקט, כולל כתובת האתר, שם המאגר ושם המשתמש בגיטהאב</span></div>
+      <div><span class="k">3</span><span>לבדוק אם מערכת הסליקה יכולה לשלוח לקונה קישור להורדה מיד אחרי התשלום</span></div>
+      <div><span class="k">בהמשך</span><span>גיליון התוכן ומסך הכתיבה לפוסטים, החיבור שלהם לאתר, וחיבור הדומיין</span></div>
     </div>
   </section>
   <!-- resources -->
